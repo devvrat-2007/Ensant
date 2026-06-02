@@ -1,16 +1,19 @@
-"""
-ASGI config for core project.
-
-It exposes the ASGI callable as a module-level variable named ``application``.
-
-For more information on this file, see
-https://docs.djangoproject.com/en/6.0/howto/deployment/asgi/
-"""
-
 import os
+from django.core.wsgi import get_wsgi_application
 
-from django.core.asgi import get_asgi_application
-
+# Make sure this points to core.settings!
 os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'core.settings')
 
-application = get_asgi_application()
+# 👇 THE HACKATHON FREE-TIER AUTO-MIGRATE HACK 👇
+import django
+from django.core.management import call_command
+django.setup()
+try:
+    print("🚀 Running automatic database migrations...")
+    call_command('migrate', interactive=False)
+    print("✅ Database migrations completed successfully!")
+except Exception as e:
+    print(f"❌ Auto-migration failed: {e}")
+# 👆 --------------------------------------- 👆
+
+application = get_wsgi_application()
