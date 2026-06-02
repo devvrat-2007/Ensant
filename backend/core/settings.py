@@ -221,7 +221,7 @@ CSRF_COOKIE_SECURE = False
 # SECURITY WARNING: never allow all origins in production.
 # Provide an explicit allowlist via the CORS_ALLOWED_ORIGINS env var
 # (comma-separated), e.g. "http://localhost:3000,https://app.flowzint.com".
-CORS_ALLOW_ALL_ORIGINS = DEBUG  # Permissive only in local development
+CORS_ALLOW_ALL_ORIGINS = True
 CORS_ALLOWED_ORIGINS = [
     o.strip() for o in os.environ.get(
         'CORS_ALLOWED_ORIGINS',

@@ -17,8 +17,7 @@
  *   const res = await fetch(apiUrl('/api/chat/'));
  */
 
-const BASE =
-  process.env.NEXT_PUBLIC_API_URL?.replace(/\/$/, '') ?? 'http://127.0.0.1:8000';
+const BASE = (process.env.NEXT_PUBLIC_API_URL || 'http://127.0.0.1:8000').replace(/\/$/, '');
 
 /**
  * Build a full backend URL from a path.
