@@ -36,9 +36,7 @@ if not SECRET_KEY:
 DEBUG = os.environ.get('DEBUG', 'False').lower() in ('true', '1', 'yes')
 
 # Comma-separated list of hosts, e.g. "example.com,api.example.com"
-ALLOWED_HOSTS = [
-    h.strip() for h in os.environ.get('ALLOWED_HOSTS', 'localhost,127.0.0.1').split(',') if h.strip()
-]
+ALLOWED_HOSTS = ['*']
 
 
 # Application definition
