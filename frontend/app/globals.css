@@ -1,0 +1,45 @@
+@import "tailwindcss";
+
+@theme inline {
+  /* Conversation / Sidebar Palette (Dark Matte) */
+  --color-chat-dark: #0f0f0f;
+  --color-chat-mid: #252525;
+  --color-chat-accent: #a27b5c;
+  --color-chat-light: #1a1a1a;
+
+  /* Control Panel / Dashboard Palette */
+  --color-panel-dark: #222831;
+  --color-panel-mid: #393e46;
+  --color-panel-accent: #00adb5;
+  --color-panel-light: #eeeeee;
+
+  /* Base Variables */
+  --color-background: var(--color-chat-light);
+  --color-foreground: var(--color-chat-dark);
+  --font-sans: var(--font-geist-sans);
+  --font-mono: var(--font-geist-mono);
+}
+
+body {
+  background: var(--color-background);
+  /* color is intentionally omitted here — the :root override in the block
+     below sets color: #e2e8f0 !important which takes precedence. Keeping a
+     conflicting color declaration here would create a specificity battle
+     that is fragile across browsers. */
+  font-family: Arial, Helvetica, sans-serif;
+}
+
+/* =========================================
+   FORCED DARK MATTE OVERRIDES
+   Bypasses cached light-mode styles
+========================================= */
+:root, html, body, [data-reactroot] {
+  background-color: var(--color-chat-light, #1a1a1a) !important;
+  color: #e2e8f0 !important; /* Tailwind slate-200 */
+  color-scheme: dark !important;
+}
+
+body.theme-matte {
+  background-color: var(--color-chat-light, #1a1a1a) !important;
+  color: #e2e8f0 !important;
+}

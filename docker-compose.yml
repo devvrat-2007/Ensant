@@ -1,0 +1,62 @@
+# FlowZint local/container orchestration.
+#
+#   docker compose up --build
+#
+# Services:
+#   redis  — Celery broker + result backend
+#   web    — Django API (gunicorn)
+#   worker — Celery worker (threads pool, concurrency 4)
+#
+# Env is loaded from backend/.env. Inside the compose network, services reach
+# Redis at host `redis` (not localhost), so the broker URLs are overridden here.
+
+services:
+  redis:
+    image: redis:7-alpine
+    restart: unless-stopped
+    ports:
+      - "6379:6379"
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 5s
+      timeout: 3s
+      retries: 5
+
+  web:
+    build:
+      context: ./backend
+    restart: unless-stopped
+    env_file:
+      - ./backend/.env
+    environment:
+      # Point Celery/cache at the compose Redis service rather than localhost.
+      CELERY_BROKER_URL: redis://redis:6379/0
+      CELERY_RESULT_BACKEND: redis://redis:6379/1
+    ports:
+      - "8000:8000"
+    volumes:
+      - shared-tmp:/app/shared_tmp
+    depends_on:
+      redis:
+        condition: service_healthy
+    # Default CMD from the Dockerfile (migrate + gunicorn) is used.
+
+  worker:
+    build:
+      context: ./backend
+    restart: unless-stopped
+    env_file:
+      - ./backend/.env
+    environment:
+      CELERY_BROKER_URL: redis://redis:6379/0
+      CELERY_RESULT_BACKEND: redis://redis:6379/1
+    volumes:
+      - shared-tmp:/app/shared_tmp
+    depends_on:
+      redis:
+        condition: service_healthy
+    # Exact worker invocation requested: threads pool, concurrency 4.
+    command: celery -A core worker --loglevel=info --pool=threads --concurrency=4
+
+volumes:
+  shared-tmp:

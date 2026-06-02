@@ -1,0 +1,17 @@
+# Keep the build context small and secrets out of the image.
+venv/
+__pycache__/
+*.py[cod]
+*.log
+db.sqlite3
+db.sqlite3-journal
+.env
+.env.*
+!.env.example
+.git/
+.gitignore
+.DS_Store
+staticfiles/
+*.jsonl
+.vscode/
+.idea/

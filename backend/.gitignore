@@ -1,0 +1,33 @@
+# ── Secrets & environment ────────────────────────────────────────────────────
+# NEVER commit real credentials. Use .env.example as the tracked template.
+.env
+.env.*
+!.env.example
+
+# ── Python ───────────────────────────────────────────────────────────────────
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+venv/
+env/
+ENV/
+.venv/
+
+# ── Django ───────────────────────────────────────────────────────────────────
+*.log
+db.sqlite3
+db.sqlite3-journal
+/media/
+/staticfiles/
+
+# ── Datasets / exports ───────────────────────────────────────────────────────
+*.jsonl
+rlhf_dataset.jsonl
+
+# ── OS / editor ──────────────────────────────────────────────────────────────
+.DS_Store
+.idea/
+.vscode/
+*.swp
