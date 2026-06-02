@@ -57,6 +57,7 @@ The system leverages **Google Gemini** as its primary reasoning engine while cas
 The following diagram illustrates how the frontend components, backend views, and background services interact to form the complete FlowZint architecture.
 
 ```mermaid
+%%{init: {'theme': 'dark', 'themeVariables': { 'background': 'transparent', 'clusterBkg': 'transparent', 'clusterBorder': '#555555', 'primaryColor': 'transparent', 'primaryBorderColor': '#777777', 'lineColor': '#aaaaaa' }}}%%
 graph TD
     %% Frontend Layer
     subgraph Frontend [Next.js Frontend]
@@ -66,12 +67,6 @@ graph TD
         CRMSync[CrmSyncButton.tsx]
         Feedback[FeedbackBar.tsx]
         
-        UI --> |POST /api/chat/| API
-        UI <-- |SSE Streaming Response| API
-        UI --> |POST /api/upload/| Upload
-        CRMSync --> |POST /api/crm/sync/| CRMAPI
-        Feedback --> |POST /api/feedback/| FeedbackAPI
-        Admin --> |GET /api/admin/| AdminAPI
         Dashboard --> Admin
     end
 
@@ -91,15 +86,15 @@ graph TD
         Failover[Failover Cascading Logic]
         
         API --> Router
-        Router --> |INFO Request| RAG
-        RAG -.-> |No Chunks Found| WebSearch
-        Router --> |TASK Request| Orchestrator
+        Router -->|INFO Request| RAG
+        RAG -.->|No Chunks Found| WebSearch
+        Router -->|TASK Request| Orchestrator
         RAG --> Orchestrator
         WebSearch --> Orchestrator
         
         Orchestrator --> SafeGen
-        SafeGen -.-> |429/503 Exception| Failover
-        Failover --> |Retry with Fallback Model| SafeGen
+        SafeGen -.->|429/503 Exception| Failover
+        Failover -->|Retry with Fallback Model| SafeGen
     end
 
     %% Services & Infrastructure Layer
@@ -114,16 +109,25 @@ graph TD
         
         Upload --> Tasks
         Tasks <--> Redis
-        Tasks --> |Embed Chunks| Pinecone
-        RAG --> |Query Vectors| Pinecone
+        Tasks -->|Embed Chunks| Pinecone
+        RAG -->|Query Vectors| Pinecone
         SafeGen <--> LLM
         
-        API -.-> |Save Logs & Chunks| Models
-        FeedbackAPI -.-> |Save RLHF Signals| Models
-        CRMAPI --> ExternalCRM
         Models --> SQLite
         AdminAPI --> SQLite
     end
+
+    %% Inter-layer Connections 
+    UI -->|POST /api/chat/| API
+    API -.->|SSE Streaming Response| UI
+    UI -->|POST /api/upload/| Upload
+    CRMSync -->|POST /api/crm/sync/| CRMAPI
+    Feedback -->|POST /api/feedback/| FeedbackAPI
+    Admin -->|GET /api/admin/| AdminAPI
+    
+    API -.->|Save Logs & Chunks| Models
+    FeedbackAPI -.->|Save RLHF Signals| Models
+    CRMAPI --> ExternalCRM
 ```
 
 ---
