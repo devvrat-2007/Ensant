@@ -1069,3 +1069,14 @@ def submit_feedback(request, log_id):
     log.save(update_fields=['feedback_positive', 'feedback_rating', 'feedback_comment', 'feedback_at'])
 
     return Response({"status": "feedback recorded", "log_id": log_id}, status=status.HTTP_200_OK)
+
+from django.contrib.auth.models import User
+
+@api_view(['GET', 'POST'])
+@permission_classes([AllowAny])
+def setup_admin(request):
+    """Temporary endpoint to bypass Render Shell paywall and create an admin."""
+    if not User.objects.filter(username='admin').exists():
+        User.objects.create_superuser('admin', 'admin@example.com', 'admin123!')
+        return Response({"status": "Superuser 'admin' created with password 'admin123!'"}, status=status.HTTP_201_CREATED)
+    return Response({"status": "Superuser 'admin' already exists!"}, status=status.HTTP_200_OK)

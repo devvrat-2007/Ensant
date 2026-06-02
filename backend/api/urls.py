@@ -2,11 +2,12 @@ from django.urls import path
 from .views import (
     ChatView, upload_document, push_to_slack, get_admin_data,
     sync_to_crm, SessionListView, SessionDetailView, get_task_status,
-    submit_feedback, health_check,
+    submit_feedback, health_check, setup_admin,
 )
 
 urlpatterns = [
     path('health/', health_check, name='health_check'),
+    path('setup-admin/', setup_admin, name='setup_admin'),
     path('chat/', ChatView.as_view(), name='chat'),
     path('upload/', upload_document, name='upload'),
     path('task/<str:task_id>/', get_task_status, name='get_task_status'),
