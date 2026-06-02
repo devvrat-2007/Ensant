@@ -86,7 +86,7 @@ export default function ChatUI() {
     }
   }, [router]);
 
-  const getAuthHeaders = () => {
+  const getAuthHeaders = (): Record<string, string> => {
     const token = localStorage.getItem('token');
     return token ? { 'Authorization': `Token ${token}` } : {};
   };
@@ -103,7 +103,7 @@ export default function ChatUI() {
 
   const fetchSessions = async () => {
     try {
-      const res = await fetch(apiUrl('/api/sessions/'), { headers: getAuthHeaders() });
+      const res = await fetch(apiUrl('/api/sessions/'), { headers: getAuthHeaders() as HeadersInit });
       if (res.ok) {
         const data = await res.json();
         setSessions(data);
